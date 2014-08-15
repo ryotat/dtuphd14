@@ -13,7 +13,7 @@ sigma=1;
 lmd = 1e-6;
 
 % order of polynomial used in learning
-polyorder=5;
+polyorder=3;
 
 % True function
 fstar=@(x)x.^3-x.^2-x;
@@ -48,7 +48,7 @@ while 1
   W(:,km)=C.w;
 
   % Plot the samples, learned function, the true function
-  subplot(2,2,1);
+  subplot(1,2,1);
   if length(get(gca,'children'))>0
     xl=xlim; yl=ylim;
   end
@@ -63,7 +63,7 @@ while 1
   title(sprintf('n=%d d=%d', n, polyorder+1));
 
   % Plot the estimated coefficients
-  subplot(2,2,2); cla;
+  subplot(1,2,2); cla;
   P=W(ix,:);
   plot(P(1,1:min(kk,N)), P(2,1:min(kk,N)), 'x', 'color', ...
        [.5 .5 .5], 'linewidth', 2);
@@ -73,26 +73,7 @@ while 1
   set(gca,'fontsize',14);
   xlabel('Coefficient for x');
   ylabel('Coefficient for x^2');
-  
-  % Plot the objective functions
-  for jj=1:2
-    subplot(2,2,2+jj);
-    tc=mean(W(ix(jj), 1:min(kk,N)));
-    tr=max(1,std(W(ix(jj), 1:min(kk,N))));
-    tt=(tc-2*tr:0.1:tc+2*tr)';
-    Xp=X(:,[1:ix(jj)-1,ix(jj)+1:end]); S=inv(Xp*Xp'+lmd*eye(n));
-    Coeff{km}=lmd*[X(:,ix(jj))'*S*X(:,ix(jj))+1, -2*X(:,ix(jj))'*S*Y, Y'*S*Y];
-    out = cell2mat(cellfun(@(p)polyval(p,tt), Coeff(1:min(kk,N)),'uniformoutput',0));
-    what=W(ix(jj), km);
-    hatval=polyval(Coeff{km}, what);
-    plot(tt, out, 'color', [.5 .5 .5]);
-    hold on;
-    plot(tt, out(:,km), what, hatval, 'mx', 'linewidth', 2);
-    hold off;
-    grid on;
-  end
-  
-  
+
   pause(0.5);
   kk=kk+1;
 end
