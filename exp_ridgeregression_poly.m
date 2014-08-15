@@ -11,7 +11,7 @@ lossfun=@(y,f)(y-f).^2;
 fstar=@(x)x.^3-x.^2-x;
 
 % order of polynomial used in learning
-polyorder=10;
+polyorder=3;
 
 % Input distribution
 samplex=@(n)bsxfun(@power, randn(n,1), 1:polyorder);
@@ -23,14 +23,14 @@ ix=[1,2];
 sigma=1;
 
 % Regularization parameter
-lmd = 1;
+lmd = 1e-6;
 
 % input variables
 X=samplex(n);
 ytrue=fstar(X(:,1));
 
 % Test points
-xx=bsxfun(@power, (-2:0.1:2)', 1:polyorder);
+xx=bsxfun(@power, (-5.1:5)', 1:polyorder);
 Xtest=samplex(ntest);
 ytesttrue=fstar(Xtest(:,1));
 
@@ -81,13 +81,10 @@ while demo || kk<=N
   set(gca,'fontsize',14);
   xlabel('Coefficient for x');
   ylabel('Coefficient for x^2');
-  title(sprintf('test err=%g', err(km)));
+  title(sprintf('test err=%g (mean: %g)', err(km), mean(err(1:min(kk,N)))));
   %  title(sprintf('test err=%g %s %g', ...
 %                                     mean(err(1:min(kk,N))), char(177), std(err(1:min(kk,N)))), 'fontsize', 16);
   
-  if err(km)>10
-    break;
-  end
   if demo
     pause(0.5);
   end
