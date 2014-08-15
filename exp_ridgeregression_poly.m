@@ -1,5 +1,5 @@
 % number of samples
-n=200;
+n=20;
 ntest=1000;
 
 N=100;
@@ -30,7 +30,7 @@ X=samplex(n);
 ytrue=fstar(X(:,1));
 
 % Test points
-xx=bsxfun(@power, (-5.1:5)', 1:polyorder);
+xx=bsxfun(@power, (-5:.1:5)', 1:polyorder);
 Xtest=samplex(ntest);
 ytesttrue=fstar(Xtest(:,1));
 
@@ -59,15 +59,18 @@ while demo || kk<=N
   if length(get(gca,'children'))>0
     xl=xlim; yl=ylim;
   end
-  plot(X(:,1), Y, 'x', ...
+  h=plot(xx(:,1), fstar(xx(:,1)), '--', ...
        xx(:,1), xx*C.w+C.bias, '-.', ...
-       xx(:,1), fstar(xx(:,1)), 'm--', 'linewidth', 2);
+       X(:,1), Y, 'bx', 'linewidth', 2);
+  set(h(1),'color',[.5 .5 .5]);
   xlim(xl); ylim(yl);
   grid on;
   set(gca,'fontsize',14);
   xlabel('Input');
   ylabel('Output');
   title(sprintf('n=%d d=%d', n, polyorder+1));
+  legend('true function','learned function', 'samples',...
+         'Location', 'SouthEast');
   
   % Plot the estimated coefficients
   subplot(1,2,2);
