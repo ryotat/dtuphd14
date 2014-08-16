@@ -1,5 +1,5 @@
 % number of samples
-n=200;
+n=20;
 ntest=1000;
 
 N=100;
@@ -7,13 +7,17 @@ N=100;
 % Number of dimensions
 d=10;
 
-% loss function
-lossfun=@(y,f)(1-sign(y.*f))/2;
-
 % True function
 w0=[2, -1, zeros(1,d-2)]';
-fstar=@(x)x*w0;
 C0=struct('w',w0, 'bias', 0);
+
+fstar=@(x)x*w0;
+flink=@(z)exp(z-logsumexp([-z, z],2));
+fout=@(p)2*(rand(size(p))>1-flink(p))-1;
+
+% loss function
+%lossfun=@(z,f)flink(z).*log(flink(z)./flink(f))+flink(-z).*log(flink(-z)./flink(-z));
+lossfun=@(z,f)(1-sign(z.*f))/2;
 
 % Input distribution
 samplex=@(n)randn(n,d);
@@ -42,12 +46,10 @@ W=zeros(d+1, N); % +1 is the bias term
 err=zeros(1,N);
 figure;
 kk=1;
-% xl=[min(xx(:,1)), max(xx(:,1))]; yl=[min(fstar(xx(:,1)))-1, max(fstar(xx(:,1)))+1];
 while demo || kk<=N
   km=mod1(kk,N);
   % sample output variables
-  pp=exp(ytrue-logsumexp([-ytrue, ytrue],2));
-  Y=2*(rand(n,1)>1-pp)-1;
+  Y=fout(ytrue);
 
   % Train ridge regression
   C=train_logit(X, Y, lmd);
@@ -91,8 +93,8 @@ while demo || kk<=N
   hold off;
   axis equal; grid on;
   set(gca,'fontsize',14);
-  xlabel('Coefficient for x');
-  ylabel('Coefficient for x^2');
+  xlabel(sprintf('Coefficient for x(%d)', ix(1)));
+  ylabel(sprintf('Coefficient for x(%d)', ix(2)));
   title(sprintf('test err=%g (mean: %g)', err(km), mean(err(1:min(kk,N)))));
   %  title(sprintf('test err=%g %s %g', ...
 %                                     mean(err(1:min(kk,N))), char(177), std(err(1:min(kk,N)))), 'fontsize', 16);

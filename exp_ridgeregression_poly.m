@@ -4,14 +4,15 @@ ntest=1000;
 
 N=100;
 
-% loss function
-lossfun=@(y,f)(y-f).^2;
+% order of polynomial used in learning
+polyorder=3;
 
 % True function
 fstar=@(x)x.^3-x.^2-x;
+fout=@(z)z+sigma*randn(n, 1)
 
-% order of polynomial used in learning
-polyorder=3;
+% loss function
+lossfun=@(y,f)(y-f).^2;
 
 % Input distribution
 samplex=@(n)bsxfun(@power, randn(n,1), 1:polyorder);
@@ -45,7 +46,7 @@ xl=[min(xx(:,1)), max(xx(:,1))]; yl=[min(fstar(xx(:,1)))-1, max(fstar(xx(:,1)))+
 while demo || kk<=N
   km=mod1(kk,N);
   % sample output variables
-  Y=ytrue+sigma*randn(n, 1);
+  Y=fout(ytrue);
 
   % Train ridge regression
   C=train_ridge(X, Y, lmd, struct('center', 1));
