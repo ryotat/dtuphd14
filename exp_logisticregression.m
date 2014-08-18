@@ -16,7 +16,6 @@ flink=@(z)exp(z-logsumexp([-z, z],2));
 fout=@(p)2*(rand(size(p))>1-flink(p))-1;
 
 % loss function
-%lossfun=@(z,f)flink(z).*log(flink(z)./flink(f))+flink(-z).*log(flink(-z)./flink(-z));
 lossfun=@(z,f)(1-sign(z.*f))/2;
 
 % Input distribution
@@ -89,6 +88,8 @@ while demo || kk<=N
   plot(P(1,1:min(kk,N)), P(2,1:min(kk,N)), 'x', 'color', ...
        [.5 .5 .5], 'linewidth', 2);
   hold on;
+  scale=norm(C.w)/norm(w0);
+  plot([0 w0(ix(1))]*scale, [0 w0(ix(2))]*scale, 'm*--', 'linewidth', 2);
   plot(P(1,km), P(2,km), 'x', 'linewidth', 2);
   hold off;
   axis equal; grid on;
