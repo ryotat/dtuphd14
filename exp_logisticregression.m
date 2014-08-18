@@ -25,7 +25,7 @@ samplex=@(n)randn(n,d);
 ix=[1,2];
 
 % Regularization parameter
-lmd = 1e-6;
+lmd = 1;
 
 % input variables
 X=samplex(n);
@@ -86,14 +86,15 @@ while demo || kk<=N
        [.5 .5 .5], 'linewidth', 2);
   hold on;
   scale=norm(C.w)/norm(w0);
-  plot([0 w0(ix(1))]*scale, [0 w0(ix(2))]*scale, 'm*--', 'linewidth', 2);
-  plot(P(1,km), P(2,km), 'x', 'linewidth', 2);
+  h1=plot([0 w0(ix(1))]*scale, [0 w0(ix(2))]*scale, 'm*--', 'linewidth', 2);
+  h2=plot(P(1,km), P(2,km), 'x', 'linewidth', 2);
   hold off;
   axis equal; grid on;
   set(gca,'fontsize',14);
   xlabel(sprintf('Coefficient for x(%d)', ix(1)));
   ylabel(sprintf('Coefficient for x(%d)', ix(2)));
   title(sprintf('test err=%g (mean: %g)', err(km), mean(err(1:min(kk,N)))));
+  legend([h1,h2],'Correct direction','estiamtor','Location','SouthEast');
   %  title(sprintf('test err=%g %s %g', ...
 %                                     mean(err(1:min(kk,N))), char(177), std(err(1:min(kk,N)))), 'fontsize', 16);
   
