@@ -25,7 +25,7 @@ samplex=@(n)randn(n,d);
 ix=[1,2];
 
 % Regularization parameter
-lmd = 1e-6;
+lmd = 1;
 
 % input variables
 X=samplex(n);
@@ -47,9 +47,10 @@ while demo || kk<=N
   % sample output variables
   Y=fout(ytrue);
 
-  % Train ridge regression
-  C=train_logit(X, Y, lmd);
-  W(:,km)=[C.w; C.bias];
+  % Train L1-regularized logistic regression
+  [ww, bias]=dallrl1(zeros(d,1), 0, X, Y, lmd, 'display',1);
+  C=struct('w',ww,'bias',bias);
+  W(:,km)=[ww; bias];
 
   % Compute test error
   err(km)=mean(lossfun(ytesttrue,Xtest*C.w+C.bias));
