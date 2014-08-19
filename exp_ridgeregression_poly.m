@@ -5,11 +5,14 @@ ntest=1000;
 N=100;
 
 % order of polynomial used in learning
-polyorder=3;
+polyorder=5;
+
+% noise standard deviation
+sigma=1;
 
 % True function
-fstar=@(x)x.^3-x.^2-x;
-fout=@(z)z+sigma*randn(n, 1)
+fstar=@(x)x.^3-x;
+fout=@(z)z+sigma*randn(n, 1);
 
 % loss function
 lossfun=@(y,f)(y-f).^2;
@@ -20,11 +23,8 @@ samplex=@(n)bsxfun(@power, randn(n,1), 1:polyorder);
 % Indices of coefficients to be visualized
 ix=[1,2];
 
-% noise standard deviation
-sigma=1;
-
 % Regularization parameter
-lmd = 1e-6;
+lmd = 1e-5;
 
 % input variables
 X=samplex(n);
@@ -42,7 +42,7 @@ W=zeros(polyorder+1, N); % +1 is the bias term
 err=zeros(1,N);
 figure;
 kk=1;
-xl=[min(xx(:,1)), max(xx(:,1))]; yl=[min(fstar(xx(:,1)))-1, max(fstar(xx(:,1)))+1];
+xl=[min(xx(:,1)), max(xx(:,1))]; yl=[-2, 2];
 while demo || kk<=N
   km=mod1(kk,N);
   % sample output variables
