@@ -5,13 +5,14 @@ ntest=1000;
 N=100;
 
 % order of polynomial used in learning
-polyorder=5;
+polyorder=2;
 
 % noise standard deviation
 sigma=1;
 
 % True function
-fstar=@(x)x.^3-x;
+w0=[1, 0, -1, 0]';
+fstar=@(x)polyval(w0,x);
 fout=@(z)z+sigma*randn(n, 1);
 
 % loss function
@@ -21,7 +22,7 @@ lossfun=@(y,f)(y-f).^2;
 samplex=@(n)bsxfun(@power, randn(n,1), polyorder:-1:0);
 
 % Indices of coefficients to be visualized
-ix=[polyorder,polyorder-1];
+ix=[1, 2];
 
 % Regularization parameter
 lmd = 1e-5;
@@ -74,18 +75,20 @@ while demo || kk<=N
          'Location', 'SouthEast');
   
   % Plot the estimated coefficients
+  ixd=polyorder+1-ix;
   subplot(1,2,2);
-  P=W(ix,:);
+  P=W(ixd,:);
   plot(P(1,1:min(kk,N)), P(2,1:min(kk,N)), 'x', 'color', ...
        [.5 .5 .5], 'linewidth', 2);
   hold on;
-  plotEllipse(mean(W(ix,1:min(kk,N)),2), cov(W(ix,1:min(kk,N))'), [0 .5 .5], 1, 6);
+  plot(w0(length(w0)-ix(1)), w0(length(w0)-ix(2)), 'm*', 'linewidth', 2);
+  plotEllipse(mean(W(ixd,1:min(kk,N)),2), cov(W(ixd,1:min(kk,N))'), [0 .5 .5], 1, 6);
   plot(P(1,km), P(2,km), 'x', 'linewidth', 2);
   hold off;
   axis equal; grid on;
   set(gca,'fontsize',14);
-  xlabel(sprintf('Coefficient for x^%d',polyorder+1-ix(1)));
-  ylabel(sprintf('Coefficient for x^%d',polyorder+1-ix(2)));
+  xlabel(sprintf('Coefficient for x^%d',ix(1)));
+  ylabel(sprintf('Coefficient for x^%d',ix(2)));
   title(sprintf('test err=%g (mean: %g)', err(km), mean(err(1:min(kk,N)))));
   %  title(sprintf('test err=%g %s %g', ...
 %                                     mean(err(1:min(kk,N))), char(177), std(err(1:min(kk,N)))), 'fontsize', 16);
