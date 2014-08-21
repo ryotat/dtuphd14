@@ -5,7 +5,7 @@ ntest=1000;
 N=100;
 
 % order of polynomial used in learning
-polyorder=2;
+polyorder=5;
 
 % noise standard deviation
 sigma=1;
