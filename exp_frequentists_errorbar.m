@@ -21,9 +21,6 @@ lossfun=@(y,f)(y-f).^2;
 % Input distribution
 samplex=@(n)bsxfun(@power, randn(n,1), polyorder:-1:0);
 
-% Indices of coefficients to be visualized
-ix=[1, 2];
-
 % Regularization parameter
 lmd = 1e-5;
 
@@ -59,8 +56,8 @@ while demo || kk<=N
 
   % Compute predicted test error
   d=polyorder+1; lmdn=lmd/n; Sigma=X'*X/n; S=inv(Sigma+lmdn*eye(d));
-  pv=lmd^2*(norm(w0)^2)*sum((xx*S).^2,2)+sigma^2/n*diag(xx*S*Sigma*S*xx');
-
+  pv=lmdn^2*(norm(w0)^2)*sum((xx*S).^2,2)+sigma^2/n*diag(xx*S*Sigma*S*xx');
+  
   % Compute test error
   err(km)=mean(lossfun(ytesttrue,Xtest*C.w+C.bias));
   
