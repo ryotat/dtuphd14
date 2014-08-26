@@ -55,7 +55,7 @@ while demo || kk<=N
 
   
   % Compute the true error
-  pv_true=(xx*([zeros(polyorder-length(w0)+1,1); w0]-C.w)).^2;
+  pv_true=(fstar(xx(:,end-1))-xx*C.w).^2;
 
   % Compute predicted test error
   d=polyorder+1; lmdn=lmd/n; Sigma=X'*X/n; S=inv(Sigma+lmdn*eye(d));
