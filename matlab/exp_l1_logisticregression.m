@@ -1,3 +1,5 @@
+addpath dal/
+
 % number of samples
 n=20;
 ntest=1000;
